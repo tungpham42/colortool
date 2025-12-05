@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "strict": true,
+        "allowJs": true,
+        "baseUrl": ".",
+        "outDir": "dist",
+        "paths": {
+            "@/*": ["resources/js/*"]
+        },
+        "jsx": "preserve"
+    },
+    "include": ["resources/js/**/*", "resources/**/*.vue"],
+    "vueCompilerOptions": {
+        "globalTypesPath": "./node_modules/@vue/language-core/types.d.ts"
+    }
+}
