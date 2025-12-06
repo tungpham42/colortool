@@ -26,20 +26,6 @@
                     <div class="mb-3">
                         <h5>{{ $colorName }}</h5>
                     </div>
-
-                    <!-- Quick Actions -->
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary w-100" onclick="setColor('#{{ $hex }}')">
-                                <i class="fas fa-eye-dropper me-2"></i>Use Color
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <a href="{{ route('color-mixer') }}?color1=#{{ $hex }}" class="btn btn-outline-secondary w-100">
-                                <i class="fas fa-blender me-2"></i>Mix Color
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
 
