@@ -80,9 +80,9 @@
                                        onchange="document.getElementById('homeColorPreview').style.backgroundColor = this.value;">
                                 <div class="mb-3">
                                     <input type="text" id="homeColorInput" value="#3498db" class="form-control text-center"
-                                           oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)) document.getElementById('homeColorPreview').style.backgroundColor = this.value;">
+                                           oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)) document.getElementById('homeColorPreview').style.backgroundColor = this.value;" onkeyup="if(event.key === 'Enter') viewColorDetails(this.value);">
                                 </div>
-                                <button class="btn btn-gradient w-100" onclick="viewColorDetails(document.getElementById('homeColorInput').value)">
+                                <button id="viewColorDetails" class="btn btn-gradient w-100" onclick="viewColorDetails(document.getElementById('homeColorInput').value)">
                                     <i class="fas fa-eye me-2"></i>View Color Details
                                 </button>
                             </div>
