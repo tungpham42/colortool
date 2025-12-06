@@ -13,9 +13,6 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <h2 class="mb-4">Professional Color Management Tools</h2>
-                        <p class="lead mb-4">
-                            A complete suite of color tools built with Laravel Blade. No JavaScript frameworks required!
-                        </p>
 
                         <div class="row g-4">
                             <div class="col-md-6">
