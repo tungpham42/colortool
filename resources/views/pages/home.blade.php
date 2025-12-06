@@ -82,8 +82,8 @@
                                     <input type="text" id="homeColorInput" value="#3498db" class="form-control text-center"
                                            oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)) document.getElementById('homeColorPreview').style.backgroundColor = this.value;">
                                 </div>
-                                <button class="btn btn-gradient w-100" onclick="copyToClipboard(document.getElementById('homeColorInput').value)">
-                                    <i class="fas fa-copy me-2"></i>Copy Color
+                                <button class="btn btn-gradient w-100" onclick="viewColorDetails(document.getElementById('homeColorInput').value)">
+                                    <i class="fas fa-eye me-2"></i>View Color Details
                                 </button>
                             </div>
                         </div>
@@ -121,6 +121,15 @@
 
 @push('scripts')
 <script>
+    function viewColorDetails(hex) {
+        if (/^#[0-9A-F]{6}$/i.test(hex)) {
+            const cleanHex = hex.substring(1).toUpperCase();
+            window.location.href = `/` + cleanHex;
+        } else {
+            showToast('Please enter a valid HEX color code.');
+        }
+    }
+
     document.getElementById('homeColorPicker').addEventListener('input', function(e) {
         document.getElementById('homeColorInput').value = e.target.value;
     });
