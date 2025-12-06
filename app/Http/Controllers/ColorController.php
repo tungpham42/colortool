@@ -526,4 +526,399 @@ class ColorController extends Controller
             ['name' => 'Black', 'hex' => '#000000', 'rgb' => '0,0,0', 'category' => 'Black']
         ];
     }
+
+    /**
+     * Display color details page for a specific hex color
+     */
+    public function show($hex)
+    {
+        // Validate hex format (6 characters, hex digits)
+        if (!preg_match('/^[0-9A-Fa-f]{6}$/', $hex)) {
+            abort(404, 'Invalid color hex code');
+        }
+
+        $hex = strtolower($hex);
+
+        // Convert to uppercase for display
+        $hexUpper = strtoupper($hex);
+
+        // Calculate color properties
+        $rgb = $this->hexToRgb('#' . $hex);
+        $hsl = $this->rgbToHsl($rgb['r'], $rgb['g'], $rgb['b']);
+        $hsv = $this->rgbToHsv($rgb['r'], $rgb['g'], $rgb['b']);
+        $cmyk = $this->rgbToCmyk($rgb['r'], $rgb['g'], $rgb['b']);
+        $brightness = $this->calculateBrightness('#' . $hex);
+
+        // Get color name from database
+        $colorName = $this->getColorName($hex);
+
+        // Calculate harmonies
+        $harmonies = [
+            'complementary' => $this->calculateComplementary($hex),
+            'analogous' => $this->calculateAnalogous($hex),
+            'triadic' => $this->calculateTriadic($hex),
+            'split_complementary' => $this->calculateSplitComplementary($hex),
+            'tetradic' => $this->calculateTetradic($hex),
+            'monochromatic' => $this->calculateMonochromatic($hex)
+        ];
+
+        // Get related colors (darker/lighter variations)
+        $relatedColors = $this->getRelatedColors($hex);
+
+        // Calculate contrast ratios with common backgrounds
+        $contrasts = [
+            'white' => $this->calculateContrastRatio('#' . $hex, '#FFFFFF'),
+            'black' => $this->calculateContrastRatio('#' . $hex, '#000000'),
+            'light_gray' => $this->calculateContrastRatio('#' . $hex, '#F8F9FA'),
+            'dark_gray' => $this->calculateContrastRatio('#' . $hex, '#343A40')
+        ];
+
+        // Calculate color temperature
+        $temperature = $this->calculateTemperature($hex);
+
+        // Find similar colors from database
+        $similarColors = $this->findSimilarColors($hex, 6);
+
+        return view('pages.color-details', [
+            'hex' => $hex,
+            'hexUpper' => $hexUpper,
+            'rgb' => $rgb,
+            'hsl' => $hsl,
+            'hsv' => $hsv,
+            'cmyk' => $cmyk,
+            'brightness' => $brightness,
+            'colorName' => $colorName,
+            'harmonies' => $harmonies,
+            'relatedColors' => $relatedColors,
+            'contrasts' => $contrasts,
+            'temperature' => $temperature,
+            'similarColors' => $similarColors,
+            'color' => '#' . $hex // For compatibility with existing functions
+        ]);
+    }
+
+    /**
+     * Calculate complementary color
+     */
+    private function calculateComplementary($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+        $hsl['h'] = ($hsl['h'] + 180) % 360;
+        return [$this->hslToHex($hsl)];
+    }
+
+    /**
+     * Calculate analogous colors
+     */
+    private function calculateAnalogous($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+        return [
+            $this->hslToHex(['h' => ($hsl['h'] + 330) % 360, 's' => $hsl['s'], 'l' => $hsl['l']]),
+            $hex,
+            $this->hslToHex(['h' => ($hsl['h'] + 30) % 360, 's' => $hsl['s'], 'l' => $hsl['l']])
+        ];
+    }
+
+    /**
+     * Calculate triadic colors
+     */
+    private function calculateTriadic($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+        return [
+            $hex,
+            $this->hslToHex(['h' => ($hsl['h'] + 120) % 360, 's' => $hsl['s'], 'l' => $hsl['l']]),
+            $this->hslToHex(['h' => ($hsl['h'] + 240) % 360, 's' => $hsl['s'], 'l' => $hsl['l']])
+        ];
+    }
+
+    /**
+     * Calculate split complementary colors
+     */
+    private function calculateSplitComplementary($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+        return [
+            $hex,
+            $this->hslToHex(['h' => ($hsl['h'] + 150) % 360, 's' => $hsl['s'], 'l' => $hsl['l']]),
+            $this->hslToHex(['h' => ($hsl['h'] + 210) % 360, 's' => $hsl['s'], 'l' => $hsl['l']])
+        ];
+    }
+
+    /**
+     * Calculate tetradic colors
+     */
+    private function calculateTetradic($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+        return [
+            $hex,
+            $this->hslToHex(['h' => ($hsl['h'] + 90) % 360, 's' => $hsl['s'], 'l' => $hsl['l']]),
+            $this->hslToHex(['h' => ($hsl['h'] + 180) % 360, 's' => $hsl['s'], 'l' => $hsl['l']]),
+            $this->hslToHex(['h' => ($hsl['h'] + 270) % 360, 's' => $hsl['s'], 'l' => $hsl['l']])
+        ];
+    }
+
+    /**
+     * Calculate monochromatic colors
+     */
+    private function calculateMonochromatic($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+        return [
+            $this->hslToHex(['h' => $hsl['h'], 's' => $hsl['s'], 'l' => max(0, $hsl['l'] - 30)]),
+            $this->hslToHex(['h' => $hsl['h'], 's' => $hsl['s'], 'l' => max(0, $hsl['l'] - 10)]),
+            $this->hslToHex(['h' => $hsl['h'], 's' => $hsl['s'], 'l' => min(100, $hsl['l'] + 10)]),
+            $this->hslToHex(['h' => $hsl['h'], 's' => $hsl['s'], 'l' => min(100, $hsl['l'] + 30)])
+        ];
+    }
+
+    /**
+     * Convert hex to HSL
+     */
+    private function hexToHsl($hex)
+    {
+        $rgb = $this->hexToRgb('#' . $hex);
+        return $this->rgbToHsl($rgb['r'], $rgb['g'], $rgb['b']);
+    }
+
+    /**
+     * Convert HSL to hex
+     */
+    private function hslToHex($hsl)
+    {
+        $rgb = $this->hslToRgb($hsl['h'], $hsl['s'], $hsl['l']);
+        $hex = $this->rgbToHex($rgb['r'], $rgb['g'], $rgb['b']);
+        return str_replace('#', '', $hex);
+    }
+
+    /**
+     * Get related colors (darker/lighter variations)
+     */
+    private function getRelatedColors($hex)
+    {
+        $hsl = $this->hexToHsl($hex);
+
+        $variations = [];
+
+        // Lightness variations
+        for ($i = -2; $i <= 2; $i++) {
+            if ($i === 0) continue; // Skip the original color
+            $lightness = max(0, min(100, $hsl['l'] + ($i * 10)));
+            $variationHsl = ['h' => $hsl['h'], 's' => $hsl['s'], 'l' => $lightness];
+            $variationHex = $this->hslToHex($variationHsl);
+
+            $variations[] = [
+                'hex' => $variationHex,
+                'name' => $i < 0 ? 'Darker' . abs($i) : 'Lighter' . $i
+            ];
+        }
+
+        // Saturation variations
+        for ($i = -1; $i <= 1; $i++) {
+            if ($i === 0) continue;
+            $saturation = max(0, min(100, $hsl['s'] + ($i * 20)));
+            $variationHsl = ['h' => $hsl['h'], 's' => $saturation, 'l' => $hsl['l']];
+            $variationHex = $this->hslToHex($variationHsl);
+
+            $variations[] = [
+                'hex' => $variationHex,
+                'name' => $i < 0 ? 'Desaturated' : 'Saturated'
+            ];
+        }
+
+        return $variations;
+    }
+
+    /**
+     * Get color name from database
+     */
+    private function getColorName($hex)
+    {
+        $colors = $this->getColorDatabase();
+
+        foreach ($colors as $color) {
+            if (strtolower(str_replace('#', '', $color['hex'])) === $hex) {
+                return $color['name'];
+            }
+        }
+
+        // If no exact match, find similar
+        $hsl = $this->hexToHsl($hex);
+
+        if ($hsl['l'] < 10) return 'Near Black';
+        if ($hsl['l'] > 90) return 'Near White';
+        if ($hsl['s'] < 10) return 'Gray';
+
+        // Return color family based on hue
+        $hue = $hsl['h'];
+        if ($hue < 15 || $hue > 345) return 'Red';
+        if ($hue >= 15 && $hue < 45) return 'Orange';
+        if ($hue >= 45 && $hue < 75) return 'Yellow';
+        if ($hue >= 75 && $hue < 165) return 'Green';
+        if ($hue >= 165 && $hue < 195) return 'Cyan';
+        if ($hue >= 195 && $hue < 255) return 'Blue';
+        if ($hue >= 255 && $hue < 285) return 'Purple';
+        if ($hue >= 285 && $hue < 345) return 'Pink';
+
+        return 'Unknown Color';
+    }
+
+    /**
+     * Find similar colors from database
+     */
+    private function findSimilarColors($hex, $limit = 6)
+    {
+        $targetRgb = $this->hexToRgb('#' . $hex);
+        $colors = $this->getColorDatabase();
+
+        $similar = [];
+
+        foreach ($colors as $color) {
+            $colorRgb = $this->hexToRgb($color['hex']);
+
+            // Calculate Euclidean distance in RGB space
+            $distance = sqrt(
+                pow($targetRgb['r'] - $colorRgb['r'], 2) +
+                pow($targetRgb['g'] - $colorRgb['g'], 2) +
+                pow($targetRgb['b'] - $colorRgb['b'], 2)
+            );
+
+            $similar[] = [
+                'hex' => str_replace('#', '', $color['hex']),
+                'name' => $color['name'],
+                'distance' => $distance
+            ];
+        }
+
+        // Sort by distance (closest first)
+        usort($similar, function($a, $b) {
+            return $a['distance'] <=> $b['distance'];
+        });
+
+        // Return closest matches (excluding exact match)
+        return array_slice($similar, 1, $limit);
+    }
+
+    /**
+     * Calculate contrast ratio between two colors
+     */
+    private function calculateContrastRatio($color1, $color2)
+    {
+        $l1 = $this->calculateRelativeLuminance($color1);
+        $l2 = $this->calculateRelativeLuminance($color2);
+
+        if ($l1 > $l2) {
+            return round(($l1 + 0.05) / ($l2 + 0.05), 2);
+        }
+        return round(($l2 + 0.05) / ($l1 + 0.05), 2);
+    }
+
+    /**
+     * Calculate relative luminance for contrast ratio
+     */
+    private function calculateRelativeLuminance($color)
+    {
+        $rgb = $this->hexToRgb($color);
+
+        $r = $rgb['r'] / 255;
+        $g = $rgb['g'] / 255;
+        $b = $rgb['b'] / 255;
+
+        $r = $r <= 0.03928 ? $r / 12.92 : pow(($r + 0.055) / 1.055, 2.4);
+        $g = $g <= 0.03928 ? $g / 12.92 : pow(($g + 0.055) / 1.055, 2.4);
+        $b = $b <= 0.03928 ? $b / 12.92 : pow(($b + 0.055) / 1.055, 2.4);
+
+        return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
+    }
+
+    /**
+     * Calculate color temperature (-1 = cool, 0 = neutral, 1 = warm)
+     */
+    private function calculateTemperature($hex)
+    {
+        $rgb = $this->hexToRgb('#' . $hex);
+
+        // Simple temperature calculation based on red-blue balance
+        $temperature = ($rgb['r'] - $rgb['b']) / 255;
+
+        // Normalize to 0-1 range
+        return ($temperature + 1) / 2;
+    }
+
+    /**
+     * Convert RGB to HSV
+     */
+    private function rgbToHsv($r, $g, $b)
+    {
+        $r = $r / 255;
+        $g = $g / 255;
+        $b = $b / 255;
+
+        $max = max($r, $g, $b);
+        $min = min($r, $g, $b);
+        $d = $max - $min;
+
+        $h = 0;
+        if ($d != 0) {
+            switch($max) {
+                case $r:
+                    $h = 60 * fmod((($g - $b) / $d), 6);
+                    if ($b > $g) $h += 360;
+                    break;
+                case $g:
+                    $h = 60 * ((($b - $r) / $d) + 2);
+                    break;
+                case $b:
+                    $h = 60 * ((($r - $g) / $d) + 4);
+                    break;
+            }
+        }
+
+        $s = $max == 0 ? 0 : ($d / $max) * 100;
+        $v = $max * 100;
+
+        return [
+            'h' => round($h),
+            's' => round($s),
+            'v' => round($v)
+        ];
+    }
+
+    /**
+     * Convert RGB to CMYK
+     */
+    private function rgbToCmyk($r, $g, $b)
+    {
+        if ($r == 0 && $g == 0 && $b == 0) {
+            return ['c' => 0, 'm' => 0, 'y' => 0, 'k' => 100];
+        }
+
+        $c = 1 - ($r / 255);
+        $m = 1 - ($g / 255);
+        $y = 1 - ($b / 255);
+
+        $k = min($c, $m, $y);
+
+        if ($k == 1) {
+            return ['c' => 0, 'm' => 0, 'y' => 0, 'k' => 100];
+        }
+
+        return [
+            'c' => round((($c - $k) / (1 - $k)) * 100),
+            'm' => round((($m - $k) / (1 - $k)) * 100),
+            'y' => round((($y - $k) / (1 - $k)) * 100),
+            'k' => round($k * 100)
+        ];
+    }
+
+    /**
+     * Calculate brightness (0-1)
+     */
+    private function calculateBrightness($hex)
+    {
+        $rgb = $this->hexToRgb($hex);
+        return (0.299 * $rgb['r'] + 0.587 * $rgb['g'] + 0.114 * $rgb['b']) / 255;
+    }
 }

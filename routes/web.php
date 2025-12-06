@@ -23,6 +23,10 @@ Route::get('/color-lookup', function () {
     return view('pages.color-lookup');
 })->name('color-lookup');
 
+Route::get('/{hex}', [ColorController::class, 'show'])
+    ->where('hex', '[0-9A-Fa-f]{6}')
+    ->name('color.details');
+
 // API Routes for AJAX
 Route::prefix('api')->group(function () {
     Route::post('/convert-color', [ColorController::class, 'convert']);
