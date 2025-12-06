@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\ColorController;
 
 Route::get('/', function () {
@@ -33,4 +34,20 @@ Route::prefix('api')->group(function () {
     Route::post('/extract-colors', [ColorController::class, 'extract'])->name('api.extract-colors');
     Route::post('/save-palette', [ColorController::class, 'savePalette']);
     Route::get('/search-colors', [ColorController::class, 'search'])->name('api.search-colors');
+});
+
+Route::get('/test-redis', function () {
+    $key = 'redis_test_key';
+
+    // Put to cache for 60 seconds
+    Cache::put($key, 'Redis is working!', 60);
+
+    // Retrieve value
+    $value = Cache::get($key);
+
+    return response()->json([
+        'value' => $value,
+        'driver' => config('cache.default'),
+        'redis_connection' => config('database.redis.default')
+    ]);
 });
