@@ -108,7 +108,7 @@
             </div>
             <div class="card-body text-center">
                 <div id="imagePreview" class="mb-3">
-                    <img id="previewImage" src="" alt="Preview" class="img-fluid rounded" style="display: none; max-height: 300px;">
+                    <img id="previewImage" src="" alt="Preview" class="img-fluid rounded w-100" style="display: none; max-height: 100%;">
                     <div id="noPreview" class="text-muted py-5">
                         <i class="fas fa-image fa-4x mb-3"></i>
                         <p>No image selected</p>
@@ -130,39 +130,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mt-4">
-            <div class="card-header">
-                <h4 class="mb-0"><i class="fas fa-star me-2"></i>Sample Images</h4>
-            </div>
-            <div class="card-body">
-                <div class="row g-2">
-                    @foreach([
-                        ['nature.jpg', 'Nature'],
-                        ['art.jpg', 'Art'],
-                        ['architecture.jpg', 'Architecture'],
-                        ['food.jpg', 'Food'],
-                        ['portrait.jpg', 'Portrait']
-                    ] as $sample)
-                        <div class="col-6">
-                            <div class="sample-image cursor-pointer" onclick="loadSampleImage('{{ $sample[0] }}')">
-                                <div class="ratio ratio-1x1 mb-2">
-                                    <div class="bg-light rounded d-flex align-items-center justify-content-center">
-                                        <i class="fas fa-image fa-2x text-muted"></i>
-                                    </div>
-                                </div>
-                                <small class="text-center d-block">{{ $sample[1] }}</small>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="mt-3">
-                    <button class="btn btn-outline-primary w-100" onclick="loadRandomImage()">
-                        <i class="fas fa-random me-2"></i>Load Random Image
-                    </button>
                 </div>
             </div>
         </div>

@@ -4,6 +4,30 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Color System')</title>
+<meta name="description" content="A comprehensive color management tool for designers and developers. Pick, mix, extract, and lookup colors with advanced tools.">
+    <meta name="keywords" content="color picker, color mixer, color extractor, color tools, design tools, hex, rgb, hsl, cmyk">
+    <meta name="author" content="Tung Pham">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('title', 'Color System')">
+    <meta property="og:description" content="A comprehensive color management tool for designers and developers. Pick, mix, extract, and lookup colors with advanced tools.">
+    <meta property="og:image" content="{{ asset('images/og-image.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="@yield('title', 'Color System')">
+    <meta property="twitter:description" content="A comprehensive color management tool for designers and developers. Pick, mix, extract, and lookup colors with advanced tools.">
+    <meta property="twitter:image" content="{{ asset('images/twitter-image.png') }}">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -506,11 +530,6 @@
             // Remove # if present
             hex = hex.replace(/^#/, '');
 
-            // Parse hex values
-            if (hex.length === 3) {
-                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-            }
-
             const r = parseInt(hex.substring(0, 2), 16);
             const g = parseInt(hex.substring(2, 4), 16);
             const b = parseInt(hex.substring(4, 6), 16);
@@ -667,22 +686,16 @@
                     clearTimeout(typingTimer);
                     typingTimer = setTimeout(() => {
                         const color = e.target.value;
-                        if (/^#[0-9A-F]{6}$/i.test(color) || /^#[0-9A-F]{3}$/i.test(color)) {
-                            // Ensure full hex format
-                            let fullHex = color;
-                            if (color.length === 4) { // #abc format
-                                fullHex = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
-                            }
-
+                        if (/^#[0-9A-F]{6}$/i.test(color)) {
                             if (typeof updateColorInfo === 'function') {
-                                updateColorInfo(fullHex);
+                                updateColorInfo(color);
                             } else {
-                                updateColorPreview(fullHex);
+                                updateColorPreview(color);
                             }
 
                             // Update picker if it exists
                             if (window.pickr && typeof window.pickr.setColor === 'function') {
-                                window.pickr.setColor(fullHex);
+                                window.pickr.setColor(color);
                             }
                         }
                     }, 300);

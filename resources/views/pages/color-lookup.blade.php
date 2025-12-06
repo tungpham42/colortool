@@ -120,20 +120,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="card mt-4">
-            <div class="card-header">
-                <h4 class="mb-0"><i class="fas fa-history me-2"></i>Recent Views</h4>
-            </div>
-            <div class="card-body">
-                <div id="recentColors">
-                    <div class="text-center text-muted py-3">
-                        <i class="fas fa-clock fa-2x mb-2"></i>
-                        <p>No recently viewed colors</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="col-lg-8">
@@ -462,24 +448,12 @@
 
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="color-result-item" onclick="showColorDetails('${color.hex}', '${color.name.replace("'", "\\'")}')">
+                    <div class="color-result-item" onclick="showColorDetails('${color.hex}', '${color.name}')">
                         <div class="color-swatch-small" style="background-color: ${color.hex};"></div>
                         <div class="color-info">
                             <div class="color-name">${color.name}</div>
                             <div class="color-hex-code">${color.hex}</div>
                             <div class="color-category">${color.category}</div>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="action-btn" style="background: #3498db; color: white;"
-                                    onclick="event.stopPropagation(); selectColor('${color.hex}', '${color.name.replace("'", "\\'")}')"
-                                    title="Add to palette">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="action-btn" style="background: #2ecc71; color: white;"
-                                    onclick="event.stopPropagation(); copyToClipboard('${color.hex}')"
-                                    title="Copy HEX">
-                                <i class="fas fa-copy"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -563,7 +537,7 @@
         modalContent.innerHTML = `
             <div class="text-center mb-4">
                 <div class="color-preview mx-auto mb-3" style="background-color: ${hex}; width: 150px; height: 150px; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"></div>
-                <h4 style="color: ${hex}">${name}</h4>
+                <h4>${name}</h4>
             </div>
 
             <div class="table-responsive">
@@ -615,7 +589,7 @@
 
             <div class="mt-4">
                 <h5>Add to Palette</h5>
-                <button class="btn-gradient w-100" onclick="selectColor('${hex}', '${name.replace("'", "\\'")}'); $('#colorModal').modal('hide');">
+                <button class="btn-gradient w-100" onclick="selectColor('${hex}', '${name}'); $('#colorModal').modal('hide');">
                     <i class="fas fa-plus me-2"></i>Add to Current Palette
                 </button>
             </div>
@@ -804,13 +778,13 @@
         let html = '';
         recentColors.forEach(color => {
             html += `
-                <div class="recent-color-item" onclick="showColorDetails('${color.hex}', '${color.name.replace("'", "\\'")}')">
+                <div class="recent-color-item" onclick="showColorDetails('${color.hex}', '${color.name}')">
                     <div class="recent-color-swatch" style="background-color: ${color.hex};"></div>
                     <div class="recent-color-info">
                         <div class="recent-color-name">${color.name}</div>
                         <div class="recent-color-hex">${color.hex}</div>
                     </div>
-                    <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); selectColor('${color.hex}', '${color.name.replace("'", "\\'")}')">
+                    <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); selectColor('${color.hex}', '${color.name}')">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
