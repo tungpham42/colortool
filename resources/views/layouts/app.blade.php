@@ -199,7 +199,7 @@
 
         .btn-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            color: white !important;
             border: none;
             padding: 12px 24px;
             border-radius: 8px;
@@ -209,7 +209,7 @@
 
         .btn-gradient:hover {
             transform: translateY(-2px);
-            color: white;
+            color: white !important;
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
