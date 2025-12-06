@@ -437,7 +437,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5>Color System</h5>
-                    <p>A comprehensive color management tool built by <a class="text-light" href="https://tungpham42.github.io" target="_blank">Tung Pham</a></p>
+                    <p>A comprehensive color management tool built by <a class="text-light" href="https://tungpham42.github.io" target="_blank">Tung Pham</a> and <a class="text-light" href="https://tanphatdigital.com/" target="_blank">Tan Phat Digital</a></p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p>&copy; {{ date('Y') }} Color System. All rights reserved.</p>
