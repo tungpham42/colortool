@@ -121,15 +121,6 @@
 
 @push('scripts')
 <script>
-    function viewColorDetails(hex) {
-        if (/^#[0-9A-F]{6}$/i.test(hex)) {
-            const cleanHex = hex.substring(1).toUpperCase();
-            window.location.href = `/` + cleanHex;
-        } else {
-            showToast('Please enter a valid HEX color code.');
-        }
-    }
-
     document.getElementById('homeColorPicker').addEventListener('input', function(e) {
         document.getElementById('homeColorInput').value = e.target.value;
     });

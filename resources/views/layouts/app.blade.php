@@ -683,6 +683,15 @@
             return (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
         }
 
+        function viewColorDetails(hex) {
+            if (/^#[0-9A-F]{6}$/i.test(hex)) {
+                const cleanHex = hex.substring(1).toUpperCase();
+                window.location.href = `/` + cleanHex;
+            } else {
+                showToast('Please enter a valid HEX color code.');
+            }
+        }
+
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize color picker if element exists
