@@ -4,12 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Color System')</title>
-    @php
-        $color = '#' . $hex;
-        $colorName = $colorName ?? 'Color';
-        $imageUrl = "https://singlecolorimage.com/get/${hex}/1200x630";
-        $twitterImageUrl = "https://singlecolorimage.com/get/${hex}/1200x600";
-    @endphp
+    @if(request()->routeIs('color.details') && isset($hex))
+        @php
+            $color = '#' . $hex;
+            $colorName = $colorName ?? 'Color';
+            $imageUrl = "https://singlecolorimage.com/get/${hex}/1200x630";
+            $twitterImageUrl = "https://singlecolorimage.com/get/${hex}/1200x600";
+        @endphp
+    @endif
     @if(request()->routeIs('color.details') && isset($hex))
         <!-- Dynamic OG image for color details page -->
         <meta name="description" content="Explore the color {{ $colorName }} (#{{ strtoupper($hex) }}) - view its hex code, RGB values, color harmonies, and use it in your design projects. A comprehensive color tool for designers and developers.">
