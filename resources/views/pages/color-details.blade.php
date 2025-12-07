@@ -304,6 +304,14 @@
 </div>
 @endsection
 
+@push('styles')
+<style>
+    a {
+        color: var(--primary) !important;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
     // Initialize color details page
