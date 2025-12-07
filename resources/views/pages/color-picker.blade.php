@@ -18,6 +18,9 @@
                     <label class="form-label">Color Picker</label>
                     <div class="text-center">
                         <div id="colorPicker"></div>
+                        <button id="viewColorDetails" class="btn btn-gradient mt-3 text-align-center" onclick="viewColorDetails(document.getElementById('colorInput').value)">
+                            <i class="fas fa-eye me-2"></i>View Color Details
+                        </button>
                     </div>
                 </div>
 
@@ -1086,35 +1089,6 @@
             console.error('Failed to copy: ', err);
             showToast('Failed to copy to clipboard', 'error');
         });
-    }
-
-    // NEW: Toast notification function (if not already defined)
-    function showToast(message, type = 'success') {
-        // Check if Bootstrap toast is available
-        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
-            const toastEl = document.createElement('div');
-            toastEl.className = `toast align-items-center text-bg-${type} border-0`;
-            toastEl.setAttribute('role', 'alert');
-            toastEl.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            `;
-
-            document.body.appendChild(toastEl);
-            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-            toast.show();
-
-            toastEl.addEventListener('hidden.bs.toast', function () {
-                document.body.removeChild(toastEl);
-            });
-        } else {
-            // Fallback to alert
-            alert(message);
-        }
     }
 
     // Initialize

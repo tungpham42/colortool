@@ -117,7 +117,9 @@
                 <div class="text-center mt-5">
                     <h4>Mixed Color Result</h4>
                     <div id="mixedColorPreview" class="color-preview mx-auto mb-3" style="background-color: #800080; width: 200px; height: 200px;"></div>
-
+                    <button id="viewColorDetails" class="btn btn-gradient mb-3 text-align-center" onclick="viewColorDetails(document.getElementById('mixedHex').textContent)">
+                        <i class="fas fa-eye me-2"></i>View Color Details
+                    </button>
                     <div class="row justify-content-center">
                         <div class="col-md-10">
                             <div class="table-responsive">

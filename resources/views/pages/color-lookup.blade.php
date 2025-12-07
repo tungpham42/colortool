@@ -519,9 +519,6 @@
     function showColorDetails(hex, name) {
         currentSelectedColor = { hex, name };
 
-        // Add to recent colors
-        addToRecentColors(hex, name);
-
         // Show modal with color details
         const modalTitle = document.getElementById('modalTitle');
         const modalContent = document.getElementById('modalContent');
@@ -538,6 +535,9 @@
             <div class="text-center mb-4">
                 <div class="color-preview mx-auto mb-3" style="background-color: ${hex}; width: 150px; height: 150px; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"></div>
                 <h4>${name}</h4>
+                <button id="viewColorDetails" class="btn btn-gradient" onclick="viewColorDetails('${hex}')">
+                    <i class="fas fa-eye me-2"></i>View Color Details
+                </button>
             </div>
 
             <div class="table-responsive">
@@ -617,9 +617,6 @@
         } else {
             showToast(`${name} is already in the palette`, 'warning');
         }
-
-        // Add to recent colors
-        addToRecentColors(hex, name);
     }
 
     // Update selected colors display
@@ -740,60 +737,6 @@
         }
     }
 
-    // Recent colors functionality
-    function addToRecentColors(hex, name) {
-        let recentColors = JSON.parse(localStorage.getItem('recentColors') || '[]');
-
-        // Remove if already exists
-        recentColors = recentColors.filter(color => color.hex !== hex);
-
-        // Add to beginning
-        recentColors.unshift({
-            hex: hex,
-            name: name,
-            timestamp: new Date().toISOString()
-        });
-
-        // Keep only last 10
-        recentColors = recentColors.slice(0, 10);
-        localStorage.setItem('recentColors', JSON.stringify(recentColors));
-
-        updateRecentColorsDisplay();
-    }
-
-    function updateRecentColorsDisplay() {
-        const recentColors = JSON.parse(localStorage.getItem('recentColors') || '[]');
-        const container = document.getElementById('recentColors');
-
-        if (recentColors.length === 0) {
-            container.innerHTML = `
-                <div class="text-center text-muted py-3">
-                    <i class="fas fa-clock fa-2x mb-2"></i>
-                    <p>No recently viewed colors</p>
-                </div>
-            `;
-            return;
-        }
-
-        let html = '';
-        recentColors.forEach(color => {
-            html += `
-                <div class="recent-color-item" onclick="showColorDetails('${color.hex}', '${color.name}')">
-                    <div class="recent-color-swatch" style="background-color: ${color.hex};"></div>
-                    <div class="recent-color-info">
-                        <div class="recent-color-name">${color.name}</div>
-                        <div class="recent-color-hex">${color.hex}</div>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); selectColor('${color.hex}', '${color.name}')">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-    }
-
     // Helper functions
     function filterByCategory(category) {
         document.getElementById('categoryFilter').value = category;
@@ -827,7 +770,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Load initial data
         searchColors();
-        updateRecentColorsDisplay();
 
         // Set up search form
         document.getElementById('searchForm').action = '{{ route("api.search-colors") }}';

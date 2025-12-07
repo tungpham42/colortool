@@ -471,7 +471,7 @@
             document.getElementById('loader').classList.remove('active');
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(message, type = 'success', duration = 1500) {
             const toastContainer = document.getElementById('toastContainer');
             const toastId = 'toast-' + Date.now();
 
@@ -490,6 +490,11 @@
             toastContainer.innerHTML += toastHtml;
             const toast = new bootstrap.Toast(document.getElementById(toastId));
             toast.show();
+
+            // Automatically hide after the specified duration (default: 1000ms = 1 second)
+            setTimeout(() => {
+                toast.hide();
+            }, duration);
 
             // Remove after hide
             document.getElementById(toastId).addEventListener('hidden.bs.toast', function() {
