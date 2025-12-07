@@ -647,9 +647,15 @@
             const colorItem = document.createElement('div');
             colorItem.className = 'recent-color-item';
             colorItem.style.backgroundColor = hex;
+            colorItem.setAttribute('data-bs-toggle', 'tooltip');
+            colorItem.setAttribute('data-bs-placement', 'top');
+            colorItem.setAttribute('data-bs-title', hex);
             colorItem.title = hex;
             colorItem.onclick = () => setColor(hex);
 
+            new bootstrap.Tooltip(colorItem, {
+                delay: { show: 500, hide: 100 }
+            });
             container.appendChild(colorItem);
         });
     }
