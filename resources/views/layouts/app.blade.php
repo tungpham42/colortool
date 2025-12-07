@@ -4,7 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Color System')</title>
-    <meta name="description" content="A comprehensive color management tool for designers and developers. Pick, mix, extract, and lookup colors with advanced tools.">
+    @php
+        $color = '#' . $hex;
+        $colorName = $colorName ?? 'Color';
+        $imageUrl = "https://singlecolorimage.com/get/${hex}/1200x630";
+        $twitterImageUrl = "https://singlecolorimage.com/get/${hex}/1200x600";
+    @endphp
+    @if(request()->routeIs('color.details') && isset($hex))
+        <!-- Dynamic OG image for color details page -->
+        <meta name="description" content="Explore the color {{ $colorName }} (#{{ strtoupper($hex) }}) - view its hex code, RGB values, color harmonies, and use it in your design projects. A comprehensive color tool for designers and developers.">
+    @else
+        <meta name="description" content="A comprehensive color management tool for designers and developers. Pick, mix, extract, and lookup colors with advanced tools.">
+    @endif
     <meta name="keywords" content="color picker, color mixer, color extractor, color tools, design tools, hex, rgb, hsl, cmyk">
     <meta name="author" content="Tung Pham">
 
@@ -14,23 +25,16 @@
     <meta property="og:title" content="@yield('title', 'Color System')">
     @if(request()->routeIs('color.details') && isset($hex))
         <!-- Dynamic OG image for color details page -->
-        @php
-            $color = '#' . $hex;
-            $colorName = $colorName ?? 'Color';
-            $imageUrl = "https://singlecolorimage.com/get/${hex}/1200x630";
-        @endphp
         <meta property="og:description" content="Explore the color {{ $colorName }} (#{{ strtoupper($hex) }}) - view its hex code, RGB values, color harmonies, and use it in your design projects. A comprehensive color tool for designers and developers.">
         <meta property="og:image" content="{{ $imageUrl }}">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
         <meta property="og:image:alt" content="Color preview for {{ $color }}">
     @else
         <meta property="og:description" content="A comprehensive color management tool for designers and developers. Pick, mix, extract, and lookup colors with advanced tools.">
         <!-- Default OG image for other pages -->
         <meta property="og:image" content="{{ asset('images/og-image.png') }}">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
     @endif
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -38,11 +42,6 @@
     <meta property="twitter:title" content="@yield('title', 'Color System')">
     @if(request()->routeIs('color.details') && isset($hex))
         <!-- Dynamic Twitter image for color details page -->
-        @php
-            $color = '#' . $hex;
-            $colorName = $colorName ?? 'Color';
-            $twitterImageUrl = "https://singlecolorimage.com/get/${hex}/1200x600";
-        @endphp
         <meta property="twitter:description" content="Explore the color {{ $colorName }} (#{{ strtoupper($hex) }}) - view its hex code, RGB values, color harmonies, and use it in your design projects. A comprehensive color tool for designers and developers.">
         <meta property="twitter:image" content="{{ $twitterImageUrl }}">
     @else
