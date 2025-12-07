@@ -103,7 +103,7 @@
                                         <div class="palette mb-3">
                                             <div class="d-flex">
                                                 @foreach($palette as $color)
-                                                    <div style="flex: 1; height: 40px; background: {{ $color }};"></div>
+                                                    <div title="{{ $color }}" onclick="viewColorDetails('{{ $color }}')" style="cursor: pointer; flex: 1; height: 40px; background: {{ $color }};"></div>
                                                 @endforeach
                                             </div>
                                         </div>
