@@ -134,6 +134,50 @@
                 </div>
             </div>
 
+            <!-- Shades and Tints -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-layer-group me-2"></i>Shades & Tints</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Shades -->
+                    <div class="shades-group mb-4">
+                        <h6 class="mb-3">Shades (Darker)</h6>
+                        <div class="row g-2">
+                            @foreach($shades as $index => $shade)
+                                <div class="col-4 col-sm-2">
+                                    <a href="{{ route('color.details', $shade) }}"
+                                       class="d-block text-decoration-none"
+                                       title="#{{ strtoupper($shade) }}">
+                                        <div class="color-shade mb-2"
+                                             style="background-color: #{{ $shade }}; height: 40px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Tints -->
+                    <div class="tints-group">
+                        <h6 class="mb-3">Tints (Lighter)</h6>
+                        <div class="row g-2">
+                            @foreach($tints as $index => $tint)
+                                <div class="col-4 col-sm-2">
+                                    <a href="{{ route('color.details', $tint) }}"
+                                       class="d-block text-decoration-none"
+                                       title="#{{ strtoupper($tint) }}">
+                                        <div class="color-tint mb-2"
+                                             style="background-color: #{{ $tint }}; height: 40px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Accessibility -->
             <div class="card mt-4">
                 <div class="card-header">

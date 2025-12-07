@@ -710,6 +710,14 @@
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap Tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    delay: { show: 500, hide: 100 }
+                });
+            });
+
             // Initialize color picker if element exists
             if (document.getElementById('colorPicker')) {
                 window.pickr = Pickr.create({
@@ -771,6 +779,23 @@
                     }, 300);
                 });
             }
+
+            // Add tooltips to elements with title attribute that don't have data-bs-toggle="tooltip"
+            document.querySelectorAll('[title]:not([data-bs-toggle="tooltip"])').forEach(el => {
+                if (!el.getAttribute('data-bs-toggle')) {
+                    el.setAttribute('data-bs-toggle', 'tooltip');
+                    el.setAttribute('data-bs-placement', 'top');
+
+                    // Convert title to data-bs-title for Bootstrap 5
+                    const title = el.getAttribute('title');
+                    el.setAttribute('data-bs-title', title);
+
+                    // Reinitialize tooltip
+                    new bootstrap.Tooltip(el, {
+                        delay: { show: 500, hide: 100 }
+                    });
+                }
+            });
         });
 
         // Form submission handler

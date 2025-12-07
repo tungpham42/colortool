@@ -579,6 +579,9 @@ class ColorController extends Controller
         // Find similar colors from database
         $similarColors = $this->findSimilarColors($hex, 6);
 
+        $shades = $this->calculateShades($hex, 5);
+        $tints = $this->calculateTints($hex, 5);
+
         return view('pages.color-details', [
             'hex' => $hex,
             'hexUpper' => $hexUpper,
@@ -589,12 +592,58 @@ class ColorController extends Controller
             'brightness' => $brightness,
             'colorName' => $colorName,
             'harmonies' => $harmonies,
+            'shades' => $shades,
+            'tints' => $tints,
             'relatedColors' => $relatedColors,
             'contrasts' => $contrasts,
             'temperature' => $temperature,
             'similarColors' => $similarColors,
             'color' => '#' . $hex // For compatibility with existing functions
         ]);
+    }
+
+    /**
+     * Calculate shades of a color (darker versions)
+     */
+    private function calculateShades($hex, $count = 5)
+    {
+        $hsl = $this->hexToHsl($hex);
+        $shades = [];
+
+        // Original color
+        $shades[] = $hex;
+
+        // Darker shades
+        for ($i = 1; $i <= $count; $i++) {
+            $darkness = $i * 0.15; // 15% darker each step
+            $lightness = max(0, $hsl['l'] - ($hsl['l'] * $darkness));
+            $shadeHsl = ['h' => $hsl['h'], 's' => $hsl['s'], 'l' => $lightness];
+            $shades[] = $this->hslToHex($shadeHsl);
+        }
+
+        return $shades;
+    }
+
+    /**
+     * Calculate tints of a color (lighter versions)
+     */
+    private function calculateTints($hex, $count = 5)
+    {
+        $hsl = $this->hexToHsl($hex);
+        $tints = [];
+
+        // Original color
+        $tints[] = $hex;
+
+        // Lighter tints
+        for ($i = 1; $i <= $count; $i++) {
+            $lightness = $i * 0.15; // 15% lighter each step
+            $newLightness = min(100, $hsl['l'] + ((100 - $hsl['l']) * $lightness));
+            $tintHsl = ['h' => $hsl['h'], 's' => $hsl['s'], 'l' => $newLightness];
+            $tints[] = $this->hslToHex($tintHsl);
+        }
+
+        return $tints;
     }
 
     /**
