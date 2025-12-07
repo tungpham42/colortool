@@ -570,24 +570,6 @@
             </div>
 
             <div class="mt-4">
-                <h5>Color Harmonies</h5>
-                <div class="row g-2 mt-2">
-                    <div class="col-6">
-                        <div class="text-center p-2 border rounded">
-                            <div style="width: 100%; height: 40px; background: ${hex}; border-radius: 5px; margin-bottom: 5px;"></div>
-                            <small>Original</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="text-center p-2 border rounded">
-                            <div style="width: 100%; height: 40px; background: ${generateComplementary(hex)}; border-radius: 5px; margin-bottom: 5px;"></div>
-                            <small>Complementary</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
                 <h5>Add to Palette</h5>
                 <button class="btn-gradient w-100" onclick="selectColor('${hex}', '${name}'); $('#colorModal').modal('hide');">
                     <i class="fas fa-plus me-2"></i>Add to Current Palette
