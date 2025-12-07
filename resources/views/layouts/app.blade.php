@@ -426,7 +426,7 @@
                             @foreach(['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'] as $quickColor)
                                 <div class="color-swatch"
                                      style="width: 30px; height: 30px; background: {{ $quickColor }}; border-radius: 5px; cursor: pointer;"
-                                     onclick="setColor('{{ $quickColor }}')"
+                                     onclick="viewColorDetails('{{ $quickColor }}')"
                                      title="{{ $quickColor }}">
                                 </div>
                             @endforeach
