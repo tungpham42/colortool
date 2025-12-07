@@ -474,7 +474,7 @@
             document.getElementById('loader').classList.remove('active');
         }
 
-        function showToast(message, type = 'success', duration = 1500) {
+        function showToast(message, type = 'success', duration = 2500) {
             const toastContainer = document.getElementById('toastContainer');
             const toastId = 'toast-' + Date.now();
 
