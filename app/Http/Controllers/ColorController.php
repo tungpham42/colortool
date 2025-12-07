@@ -760,7 +760,7 @@ class ColorController extends Controller
 
             $variations[] = [
                 'hex' => $variationHex,
-                'name' => $i < 0 ? 'Darker' . abs($i) : 'Lighter' . $i
+                'name' => $i < 0 ? 'Darker ' . abs($i) : 'Lighter ' . $i
             ];
         }
 
