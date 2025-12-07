@@ -307,7 +307,7 @@
 @push('styles')
 <style>
     a {
-        color: var(--primary) !important;
+        color: var(--primary-color) !important;
     }
 </style>
 @endpush
