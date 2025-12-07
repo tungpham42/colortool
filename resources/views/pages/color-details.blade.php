@@ -306,7 +306,7 @@
 
 @push('styles')
 <style>
-    a {
+    a.text-decoration-none, a.harmony-color {
         color: var(--primary-color) !important;
     }
 </style>
