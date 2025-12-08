@@ -970,4 +970,102 @@ class ColorController extends Controller
         $rgb = $this->hexToRgb($hex);
         return (0.299 * $rgb['r'] + 0.587 * $rgb['g'] + 0.114 * $rgb['b']) / 255;
     }
+
+    /**
+     * Convert RGBA to other formats
+     */
+    private function rgbaToHex($r, $g, $b, $a = 1.0)
+    {
+        $rHex = str_pad(dechex($r), 2, '0', STR_PAD_LEFT);
+        $gHex = str_pad(dechex($g), 2, '0', STR_PAD_LEFT);
+        $bHex = str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
+
+        if ($a < 1.0) {
+            $aHex = str_pad(dechex(round($a * 255)), 2, '0', STR_PAD_LEFT);
+            return "#{$rHex}{$gHex}{$bHex}{$aHex}";
+        }
+
+        return "#{$rHex}{$gHex}{$bHex}";
+    }
+
+    /**
+     * Convert HEX with alpha to RGBA
+     */
+    private function hexToRgba($hex)
+    {
+        $hex = str_replace('#', '', $hex);
+
+        // Handle 3, 6, 4, or 8 character hex
+        if (strlen($hex) == 3) {
+            $r = hexdec(str_repeat(substr($hex, 0, 1), 2));
+            $g = hexdec(str_repeat(substr($hex, 1, 1), 2));
+            $b = hexdec(str_repeat(substr($hex, 2, 1), 2));
+            $a = 1.0;
+        } elseif (strlen($hex) == 6) {
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+            $a = 1.0;
+        } elseif (strlen($hex) == 4) {
+            $r = hexdec(str_repeat(substr($hex, 0, 1), 2));
+            $g = hexdec(str_repeat(substr($hex, 1, 1), 2));
+            $b = hexdec(str_repeat(substr($hex, 2, 1), 2));
+            $a = hexdec(str_repeat(substr($hex, 3, 1), 2)) / 255;
+        } elseif (strlen($hex) == 8) {
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+            $a = hexdec(substr($hex, 6, 2)) / 255;
+        }
+
+        return [
+            'r' => $r,
+            'g' => $g,
+            'b' => $b,
+            'a' => round($a, 2)
+        ];
+    }
+
+    /**
+     * Convert RGBA to HSLA
+     */
+    private function rgbaToHsla($r, $g, $b, $a = 1.0)
+    {
+        $r = $r / 255;
+        $g = $g / 255;
+        $b = $b / 255;
+
+        $max = max($r, $g, $b);
+        $min = min($r, $g, $b);
+
+        $h = $s = $l = ($max + $min) / 2;
+
+        if ($max == $min) {
+            $h = $s = 0;
+        } else {
+            $d = $max - $min;
+            $s = $l > 0.5 ? $d / (2 - $max - $min) : $d / ($max + $min);
+
+            switch ($max) {
+                case $r:
+                    $h = ($g - $b) / $d + ($g < $b ? 6 : 0);
+                    break;
+                case $g:
+                    $h = ($b - $r) / $d + 2;
+                    break;
+                case $b:
+                    $h = ($r - $g) / $d + 4;
+                    break;
+            }
+
+            $h /= 6;
+        }
+
+        return [
+            'h' => round($h * 360),
+            's' => round($s * 100),
+            'l' => round($l * 100),
+            'a' => round($a, 2)
+        ];
+    }
 }

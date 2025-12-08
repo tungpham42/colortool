@@ -26,6 +26,15 @@
                     <div class="mb-3">
                         <h5>{{ $colorName }}</h5>
                     </div>
+
+                    <div class="mt-4">
+                        <h5>Opacity</h5>
+                        <div class="d-flex align-items-center">
+                            <input type="range" id="colorAlpha" class="form-range" min="0" max="100" value="100"
+                                oninput="updateColorAlpha(this.value)">
+                            <span id="alphaValueDisplay" class="ms-3 fw-bold">100%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -84,10 +93,28 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th>RGBA</th>
+                                <td>rgba({{ $rgb['r'] }}, {{ $rgb['g'] }}, {{ $rgb['b'] }}, <span id="currentAlpha">1</span>)</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="copyCurrentRgba()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>HSL</th>
                                 <td>{{ $hsl['h'] }}°, {{ $hsl['s'] }}%, {{ $hsl['l'] }}%</td>
                                 <td class="text-end">
                                     <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('hsl({{ $hsl['h'] }}, {{ $hsl['s'] }}%, {{ $hsl['l'] }}%)')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>HSLA</th>
+                                <td>hsla({{ $hsl['h'] }}, {{ $hsl['s'] }}%, {{ $hsl['l'] }}%, <span id="currentAlpha2">1</span>)</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="copyCurrentHsla()">
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </td>
@@ -314,6 +341,31 @@
 
 @push('scripts')
 <script>
+    let currentColorAlpha = 1.0;
+
+    function updateColorAlpha(value) {
+        currentColorAlpha = value / 100;
+        document.getElementById('alphaValueDisplay').textContent = value + '%';
+        document.getElementById('currentAlpha').textContent = currentColorAlpha.toFixed(2);
+        document.getElementById('currentAlpha2').textContent = currentColorAlpha.toFixed(2);
+
+        // Update color preview
+        const preview = document.querySelector('.color-preview-large');
+        if (preview) {
+            preview.style.backgroundColor = `rgba({{ $rgb['r'] }}, {{ $rgb['g'] }}, {{ $rgb['b'] }}, ${currentColorAlpha})`;
+        }
+    }
+
+    function copyCurrentRgba() {
+        const rgba = `rgba({{ $rgb['r'] }}, {{ $rgb['g'] }}, {{ $rgb['b'] }}, ${currentColorAlpha.toFixed(2)})`;
+        copyToClipboard(rgba);
+    }
+
+    function copyCurrentHsla() {
+        const hsla = `hsla({{ $hsl['h'] }}, {{ $hsl['s'] }}%, {{ $hsl['l'] }}%, ${currentColorAlpha.toFixed(2)})`;
+        copyToClipboard(hsla);
+    }
+
     // Initialize color details page
     document.addEventListener('DOMContentLoaded', function() {
         // Update page title with color
