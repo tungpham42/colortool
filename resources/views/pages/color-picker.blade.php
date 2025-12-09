@@ -437,7 +437,7 @@
     // Screen Color Picker Functions using EyeDropper API
     async function startScreenColorPicker() {
         if (!isEyeDropperSupported) {
-            showToast('EyeDropper API is not supported in your browser. Try using Chrome, Edge, or Opera.', 'error');
+            showToast('EyeDropper API is not supported in your browser. Try using Chrome, Edge, or Opera on Desktop.', 'error');
 
             // Fallback: Show instructions for screenshot method
             showToast('Please take a screenshot and upload it instead.', 'info');
@@ -1142,7 +1142,7 @@
                 warning.className = 'alert alert-warning mt-2 small';
                 warning.innerHTML = `
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Note:</strong> Screen color picker requires Chrome, Edge, or Opera.
+                    <strong>Note:</strong> Screen color picker requires Chrome, Edge, or Opera on Desktop.
                     For other browsers, use the image upload or paste option.
                 `;
                 screenPickerCard.querySelector('.card-body').appendChild(warning);
