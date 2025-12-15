@@ -16,7 +16,7 @@ class BlockCountry
         // Localhost testing override (MaxMind usually returns false for 127.0.0.1)
         if ($ip == '127.0.0.1') {
             // You can manually set a test IP here to verify it works
-            $ip = '123.125.114.144'; // China
+            // $ip = '123.125.114.144'; // China
         }
 
         $position = Location::get($ip);
