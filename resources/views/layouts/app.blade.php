@@ -100,6 +100,9 @@
         })(window, document, "clarity", "script", "t9evh6woav");
     </script>
 
+    <!-- MGID -->
+    <script src="https://jsc.mgid.com/site/1069746.js" async></script>
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -350,6 +353,7 @@
     @stack('styles')
 </head>
 <body>
+    @include('components.mgid-noti')
     <!-- Loader -->
     <div class="loader" id="loader">
         <div class="spinner"></div>
@@ -432,6 +436,7 @@
                             @endforeach
                         </div>
                     </div>
+                    @include('components.mgid-sidebar')
                 </div>
             </div>
 
@@ -439,6 +444,7 @@
             <div class="col-lg-10 col-md-9 main-content">
                 @include('components.ads')
                 @yield('content')
+                @include('components.mgid-giuabai')
             </div>
         </div>
     </div>
