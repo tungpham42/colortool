@@ -442,7 +442,6 @@
 
             <!-- Main Content -->
             <div class="col-lg-10 col-md-9 main-content">
-                @include('components.ads')
                 @yield('content')
                 @include('components.mgid-giuabai')
             </div>
