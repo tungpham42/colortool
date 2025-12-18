@@ -353,7 +353,6 @@
     @stack('styles')
 </head>
 <body>
-    @include('components.mgid-noti')
     <!-- Loader -->
     <div class="loader" id="loader">
         <div class="spinner"></div>
