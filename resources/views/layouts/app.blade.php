@@ -852,5 +852,6 @@
     </script>
 
     @stack('scripts')
+    @include('components.mgid-smart')
 </body>
 </html>
