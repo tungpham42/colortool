@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\ChatController;
+
+Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 
 Route::get('/', function () {
     return view('pages.home');

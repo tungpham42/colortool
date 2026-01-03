@@ -850,7 +850,7 @@
             }
         });
     </script>
-
+    @include('components.chat')
     @stack('scripts')
 </body>
 </html>
