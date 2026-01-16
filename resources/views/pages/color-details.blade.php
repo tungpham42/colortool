@@ -51,7 +51,7 @@
                                 @foreach($colors as $color)
                                     <a href="{{ route('color.details', str_replace('#', '', $color)) }}"
                                        class="harmony-color"
-                                       style="width: 60px; height: 60px; background-color: #{{ $color }}; border-radius: 8px; cursor: pointer; position: relative;"
+                                       style="width: 60px; height: 60px; background-color: #{{ strtoupper($color) }}; border-radius: 8px; cursor: pointer; position: relative;"
                                        title="#{{ strtoupper($color) }}">
                                         <div class="color-label" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.9); padding: 3px; font-size: 10px; text-align: center;">
                                             #{{ strtoupper($color) }}
