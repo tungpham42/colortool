@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Color System')</title>
     @if(request()->routeIs('color.details') && isset($hex))
         @php
@@ -707,10 +708,155 @@
         function viewColorDetails(hex) {
             if (/^#[0-9A-F]{6}$/i.test(hex)) {
                 const cleanHex = hex.substring(1).toUpperCase();
-                window.location.href = `/` + cleanHex;
+                showLoader();
+
+                // Retrieve the CSRF token from the meta tag
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                // Fetch the details page content using POST instead of GET
+                fetch(`/${cleanHex}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest' // Indicates an AJAX request to Laravel
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        hideLoader();
+
+                        // Parse the fetched HTML
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+
+                        // Extract the specific content from the fetched page
+                        const mainContent = doc.querySelector('.main-content');
+                        if (!mainContent) {
+                            throw new Error('Content layout not found');
+                        }
+
+                        // (Optional) Remove ads from the modal context
+                        mainContent.querySelectorAll('.ads-container, [id^="mgid"]').forEach(el => el.remove());
+
+                        // Create modal element if it doesn't exist
+                        let modalElement = document.getElementById('colorDetailsModal');
+                        if (!modalElement) {
+                            const modalHtml = `
+                                <div class="modal fade" id="colorDetailsModal" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-light border-0">
+                                                <h5 class="modal-title fw-bold" id="colorDetailsModalLabel">Color Details</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body p-4" id="colorDetailsModalBody" style="background-color: #f8f9fa;">
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.body.insertAdjacentHTML('beforeend', modalHtml);
+                            modalElement = document.getElementById('colorDetailsModal');
+                        }
+
+                        // Update modal title and content
+                        document.getElementById('colorDetailsModalLabel').textContent = `Color Details - #${cleanHex}`;
+                        const modalBody = document.getElementById('colorDetailsModalBody');
+                        modalBody.innerHTML = mainContent.innerHTML;
+
+                        // Re-bind interactive scripts that were isolated in the blade template's bottom stack
+                        bindModalInteractions(modalBody);
+
+                        // Show the modal
+                        const modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    })
+                    .catch(error => {
+                        hideLoader();
+                        console.error('Error fetching color details:', error);
+                        showToast('Failed to load color details.', 'danger');
+                    });
             } else {
                 showToast('Please enter a valid HEX color code.');
             }
+        }
+
+        // Helper function to re-initialize inline scripts lost during AJAX innerHTML injection
+        function bindModalInteractions(modalBody) {
+            // 1. Intercept color variations/harmonies links to load inside the modal
+            modalBody.querySelectorAll('a[href]').forEach(link => {
+                const href = link.getAttribute('href');
+                // Check if the link points to a color details route
+                if (href && href.match(/\/[0-9A-Fa-f]{6}$/)) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetHex = '#' + href.split('/').pop();
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('colorDetailsModal'));
+                        modal.hide();
+                        // Wait for the modal fade out before loading the next one
+                        setTimeout(() => viewColorDetails(targetHex), 300);
+                    });
+                }
+            });
+
+            // 2. Fix the Alpha Slider Logic
+            const alphaSlider = modalBody.querySelector('#colorAlpha');
+            if (alphaSlider) {
+                alphaSlider.removeAttribute('oninput'); // Remove reference to missing global function
+                alphaSlider.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    const alpha = (value / 100).toFixed(2);
+
+                    const alphaDisplay = modalBody.querySelector('#alphaValueDisplay');
+                    const alpha1 = modalBody.querySelector('#currentAlpha');
+                    const alpha2 = modalBody.querySelector('#currentAlpha2');
+
+                    if (alphaDisplay) alphaDisplay.textContent = value + '%';
+                    if (alpha1) alpha1.textContent = alpha;
+                    if (alpha2) alpha2.textContent = alpha;
+
+                    // Dynamically read RGB value from the table
+                    let rgbText = '0,0,0';
+                    modalBody.querySelectorAll('th').forEach(th => {
+                        if (th.textContent.trim() === 'RGB') rgbText = th.nextElementSibling.textContent.trim();
+                    });
+
+                    const preview = modalBody.querySelector('.color-preview-large');
+                    if (preview) {
+                        preview.style.backgroundColor = `rgba(${rgbText}, ${alpha})`;
+                    }
+                });
+            }
+
+            // 3. Fix the missing copyCurrentRgba & copyCurrentHsla functions
+            modalBody.querySelectorAll('button[onclick^="copyCurrent"]').forEach(btn => {
+                const isRgba = btn.getAttribute('onclick').includes('Rgba');
+                btn.removeAttribute('onclick'); // Remove reference to missing global function
+                btn.addEventListener('click', () => {
+                    const alpha = modalBody.querySelector('#currentAlpha').textContent;
+                    if (isRgba) {
+                        let rgbText = '0, 0, 0';
+                        modalBody.querySelectorAll('th').forEach(th => {
+                            if (th.textContent.trim() === 'RGB') rgbText = th.nextElementSibling.textContent.trim();
+                        });
+                        copyToClipboard(`rgba(${rgbText}, ${alpha})`);
+                    } else {
+                        let hslText = '0, 0, 0';
+                        modalBody.querySelectorAll('th').forEach(th => {
+                            if (th.textContent.trim() === 'HSL') {
+                                hslText = th.nextElementSibling.textContent.trim().replace(/°|%/g, '');
+                            }
+                        });
+                        const parts = hslText.split(',').map(s => s.trim());
+                        copyToClipboard(`hsla(${parts[0]}, ${parts[1]}%, ${parts[2]}%, ${alpha})`);
+                    }
+                });
+            });
         }
 
         // Initialize when page loads

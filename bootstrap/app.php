@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use App\Http\Middleware\BlockCountry;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -17,5 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
+            // Redirect to home page
+            return redirect()->route('home');
+        });
     })->create();
